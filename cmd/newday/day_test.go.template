@@ -1,0 +1,5 @@
+package day%i_test
+
+import "testing"
+
+func TestParseInput(t *testing.T) {}
