@@ -4,6 +4,7 @@ import (
 	_ "embed"
 	"flag"
 	"fmt"
+	"html/template"
 	"log"
 	"os"
 )
@@ -24,4 +25,10 @@ func main() {
 		log.Fatalf("failed to create new day directory: %v", err)
 	}
 
+	t := template.Must(template.New("day").Parse(dayTemplate))
+	t.Execute(os.Stdout, struct {
+		DayNum int
+	}{
+		DayNum: *day,
+	})
 }

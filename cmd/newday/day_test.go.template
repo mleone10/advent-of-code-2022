@@ -1,4 +1,4 @@
-package day%i_test
+package day{{ .DayNum }}_test
 
 import "testing"
 

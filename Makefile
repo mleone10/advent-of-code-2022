@@ -1,6 +1,9 @@
 .PHONY: clean test
 clean:
-	rm -rf bin
+	rm -rf newday
 
 test: clean
 	go test ./...
+
+build: test
+	go build -o newday ./cmd/newday/...
