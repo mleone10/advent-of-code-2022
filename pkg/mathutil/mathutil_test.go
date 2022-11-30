@@ -20,6 +20,7 @@ func TestMin(t *testing.T) {
 func TestSum(t *testing.T) {
 	assert.Equal(t, mathutil.Sum(5, 10, 15), 30)
 	assert.Equal(t, mathutil.Sum(1.1, 2.2, 3.3), 6.6)
+	assert.Equal(t, mathutil.Sum([]int{5, 10, 15}...), 30)
 }
 
 func TestFrequencyList(t *testing.T) {
@@ -32,4 +33,10 @@ func TestFrequencyList(t *testing.T) {
 	assert.Equal(t, testFloatFreqs[1.1], 2)
 	assert.Equal(t, testFloatFreqs[2.2], 3)
 	assert.Equal(t, testFloatFreqs[3.3], 1)
+}
+
+func TestSlidingSum(t *testing.T) {
+	assert.ArraysEqual(t, mathutil.SlidingSum(2, []int{1, 2, 3, 4, 5, 6}), []int{3, 5, 7, 9, 11})
+	assert.ArraysEqual(t, mathutil.SlidingSum(4, []int{1, 2, 3, 4, 5, 6}), []int{10, 14, 18})
+	assert.ArraysEqual(t, mathutil.SlidingSum(3, []int{1, 2}), []int{})
 }

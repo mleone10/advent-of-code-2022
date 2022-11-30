@@ -45,3 +45,17 @@ func FrequencyList[T comparable](args ...T) map[T]int {
 
 	return freqs
 }
+
+func SlidingSum[T constraints.Ordered](width int, args []T) []T {
+	if len(args) < width {
+		return []T{}
+	}
+
+	var slidingSum []T
+
+	for i := range args[:len(args)-width+1] {
+		slidingSum = append(slidingSum, Sum(args[i:i+width]...))
+	}
+
+	return slidingSum
+}

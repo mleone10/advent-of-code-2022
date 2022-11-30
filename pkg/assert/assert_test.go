@@ -41,6 +41,23 @@ func TestNotEqual(t *testing.T) {
 	}
 }
 
+func TestArraysEqual(t *testing.T) {
+	testT := &testing.T{}
+
+	assert.ArraysEqual(testT, []int{1, 2, 3}, []int{1, 2, 3})
+	assert.ArraysEqual(testT, []float32{1.1, 2.2, 3.3}, []float32{1.1, 2.2, 3.3})
+	assert.ArraysEqual(testT, []string{"foo", "bar", "fizz", "buzz"}, []string{"foo", "bar", "fizz", "buzz"})
+
+	if testT.Failed() {
+		t.Error()
+	}
+
+	assert.ArraysEqual(testT, []int{1, 2, 3}, []int{5, 10, 15})
+	if !testT.Failed() {
+		t.Error()
+	}
+}
+
 func TestIsNil(t *testing.T) {
 	testT := &testing.T{}
 
