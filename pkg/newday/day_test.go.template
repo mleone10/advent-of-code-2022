@@ -1,0 +1,5 @@
+package day{{ .DayNum }}_test
+
+import "testing"
+
+func TestParseInput(t *testing.T) {}

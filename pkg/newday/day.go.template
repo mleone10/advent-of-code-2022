@@ -1,0 +1,5 @@
+package day{{ .DayNum }}
+
+type Day{{ .DayNum }} struct {
+  Input string
+}
