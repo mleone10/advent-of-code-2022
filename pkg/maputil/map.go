@@ -19,3 +19,5 @@ func Values[K comparable, V any](m map[K]V) []V {
 
 	return vals
 }
+
+// TODO: implement methods to simplify dealing with maps of key to slice
