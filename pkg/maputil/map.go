@@ -1,5 +1,6 @@
 package maputil
 
+// Keys returns a slice of all keys in a given map.
 func Keys[K comparable, V any](m map[K]V) []K {
 	var keys []K
 
@@ -10,6 +11,7 @@ func Keys[K comparable, V any](m map[K]V) []K {
 	return keys
 }
 
+// Values returns a slice of all values in a given map.
 func Values[K comparable, V any](m map[K]V) []V {
 	var vals []V
 

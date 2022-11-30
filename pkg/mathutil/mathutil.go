@@ -2,6 +2,7 @@ package mathutil
 
 import "golang.org/x/exp/constraints"
 
+// Max returns the largest value among a slice of Ordered values via the `>` operator.
 func Max[T constraints.Ordered](args ...T) T {
 	max := args[0]
 
@@ -14,6 +15,7 @@ func Max[T constraints.Ordered](args ...T) T {
 	return max
 }
 
+// Min returns the smallest value among a slice of Ordered values via the `<` operator.
 func Min[T constraints.Ordered](args ...T) T {
 	min := args[0]
 
@@ -26,6 +28,7 @@ func Min[T constraints.Ordered](args ...T) T {
 	return min
 }
 
+// Sum returns the aggregate total of a slice of Ordered values via the `+=` operator.
 func Sum[T constraints.Ordered](args ...T) T {
 	sum := args[0]
 
@@ -36,6 +39,7 @@ func Sum[T constraints.Ordered](args ...T) T {
 	return sum
 }
 
+// FrequencyList accepts a slice of comparable-type values and returns a map[T]int representing how many times each key appears in the input slice.
 func FrequencyList[T comparable](args ...T) map[T]int {
 	freqs := map[T]int{}
 
@@ -46,15 +50,16 @@ func FrequencyList[T comparable](args ...T) map[T]int {
 	return freqs
 }
 
-func SlidingSum[T constraints.Ordered](width int, args []T) []T {
-	if len(args) < width {
+// SlidingSum iterates over a given slice and sums sub-slices of w-width elements and returns an ordered slice of those sums.
+func SlidingSum[T constraints.Ordered](w int, args []T) []T {
+	if len(args) < w {
 		return []T{}
 	}
 
 	var slidingSum []T
 
-	for i := range args[:len(args)-width+1] {
-		slidingSum = append(slidingSum, Sum(args[i:i+width]...))
+	for i := range args[:len(args)-w+1] {
+		slidingSum = append(slidingSum, Sum(args[i:i+w]...))
 	}
 
 	return slidingSum
