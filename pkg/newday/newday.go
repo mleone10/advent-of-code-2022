@@ -2,6 +2,9 @@ package newday
 
 import (
 	_ "embed"
+	"fmt"
+	"os"
+	"text/template"
 )
 
 //go:embed day.go.template
@@ -10,19 +13,53 @@ var dayTemplate string
 //go:embed day_test.go.template
 var dayTestTemplate string
 
-// TODO: Implement tests for helper client
-// TODO: Order should be 1) create directory, 2) create files, 3) write files
-func InitializeDay(dayNum int) error {
-	// err := os.Mkdir(fmt.Sprintf("src/day%02d", dayNum), 0755)
-	// if err != nil {
-	// 	log.Fatalf("failed to create new day directory: %v", err)
-	// }
+var tDay = template.Must(template.New("day").Parse(dayTemplate))
+var tDayTest = template.Must(template.New("dayTest").Parse(dayTestTemplate))
 
-	// t := template.Must(template.New("day").Parse(dayTemplate))
-	// t.Execute(os.Stdout, struct {
-	// 	DayNum int
-	// }{
-	// 	DayNum: dayNum,
-	// })
+type templateValues struct {
+	DayNum int
+}
+
+// TODO: Implement tests for helper client (will need to mock os.Mkdir and os.Create)
+func InitializeDay(dayNum int) error {
+	err := createDayDirectory(dayNum)
+	if err != nil {
+		return err
+	}
+
+	tvs := templateValues{DayNum: dayNum}
+
+	err = writeTemplateToFile(tDay, tvs, fmt.Sprintf("src/day%02[1]d/day%02[1]d.go", dayNum))
+	if err != nil {
+		return err
+	}
+	err = writeTemplateToFile(tDayTest, tvs, fmt.Sprintf("src/day%02[1]d/day%02[1]d_test.go", dayNum))
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func createDayDirectory(dayNum int) error {
+	err := os.Mkdir(fmt.Sprintf("src/day%02d", dayNum), 0755)
+	if err != nil {
+		return fmt.Errorf("failed to create directory for day %d: %w", dayNum, err)
+	}
+
+	return nil
+}
+
+func writeTemplateToFile(t *template.Template, tvs templateValues, filePath string) error {
+	file, err := os.Create(filePath)
+	if err != nil {
+		return fmt.Errorf("failed to create empty file: %w", err)
+	}
+
+	err = t.Execute(file, tvs)
+	if err != nil {
+		return fmt.Errorf("failed to write template data to file: %w", err)
+	}
+
 	return nil
 }
