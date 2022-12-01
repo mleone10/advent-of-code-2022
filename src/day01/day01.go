@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/mleone10/advent-of-code-2022/pkg/mathutil"
+	"github.com/mleone10/advent-of-code-2022/pkg/array"
 )
 
 type Day1 struct {
@@ -20,7 +20,7 @@ func (d Day1) MaxCaloriesSingleElf() int {
 
 	maxCalories := 0
 	for _, elf := range d.elves {
-		maxCalories = mathutil.Max(maxCalories, mathutil.Sum(elf...))
+		maxCalories = array.Max([]int{maxCalories, array.Sum(elf)})
 	}
 
 	return maxCalories
@@ -33,12 +33,12 @@ func (d Day1) CaloriesTopThreeElves() int {
 
 	elfCalories := []int{}
 	for _, elf := range d.elves {
-		elfCalories = append(elfCalories, mathutil.Sum(elf...))
+		elfCalories = append(elfCalories, array.Sum(elf))
 	}
 
 	sort.Ints(elfCalories)
 
-	return mathutil.Sum(elfCalories[len(elfCalories)-3:]...)
+	return array.Sum(elfCalories[len(elfCalories)-3:])
 }
 
 func (d *Day1) init() {
