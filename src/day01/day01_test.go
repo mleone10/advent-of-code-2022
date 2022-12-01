@@ -1,11 +1,42 @@
-package day1_test
+package day01_test
 
 import (
 	"testing"
 
 	"github.com/mleone10/advent-of-code-2022/pkg/assert"
-	day1 "github.com/mleone10/advent-of-code-2022/src/day01"
+	"github.com/mleone10/advent-of-code-2022/src/day01"
 )
+
+var testCases = []struct {
+	Input           string
+	ExpectedPartOne int
+	ExpectedPartTwo int
+}{
+	{
+		Input:           testInput,
+		ExpectedPartOne: 24000,
+		ExpectedPartTwo: 45000,
+	},
+	{
+		Input:           input,
+		ExpectedPartOne: 68467,
+		ExpectedPartTwo: 203420,
+	},
+}
+
+func TestSolvePartOne(t *testing.T) {
+	for _, tc := range testCases {
+		d1 := day01.New(tc.Input)
+		assert.Equal(t, d1.MaxCaloriesSingleElf(), tc.ExpectedPartOne)
+	}
+}
+
+func TestSolvePartTwo(t *testing.T) {
+	for _, tc := range testCases {
+		d1 := day01.New(tc.Input)
+		assert.Equal(t, d1.CaloriesTopThreeElves(), tc.ExpectedPartTwo)
+	}
+}
 
 const testInput = `1000
 2000
@@ -21,37 +52,6 @@ const testInput = `1000
 9000
 
 10000`
-
-const testPartOneExpected = 24000
-const testPartTwoExpected = 45000
-
-func TestSolvePartOne(t *testing.T) {
-	d1 := day1.Day1{
-		Input: testInput,
-	}
-
-	assert.Equal(t, d1.MaxCaloriesSingleElf(), testPartOneExpected)
-
-	d1 = day1.Day1{
-		Input: input,
-	}
-
-	assert.Equal(t, d1.MaxCaloriesSingleElf(), 68467)
-}
-
-func TestSolvePartTwo(t *testing.T) {
-	d1 := day1.Day1{
-		Input: testInput,
-	}
-
-	assert.Equal(t, d1.CaloriesTopThreeElves(), testPartTwoExpected)
-
-	d1 = day1.Day1{
-		Input: input,
-	}
-
-	assert.Equal(t, d1.CaloriesTopThreeElves(), 203420)
-}
 
 const input = `2991
 13880

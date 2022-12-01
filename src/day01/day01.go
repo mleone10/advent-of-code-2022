@@ -1,4 +1,4 @@
-package day1
+package day01
 
 import (
 	"sort"
@@ -9,40 +9,13 @@ import (
 )
 
 type Day1 struct {
-	Input string
 	elves [][]int
 }
 
-func (d Day1) MaxCaloriesSingleElf() int {
-	if d.elves == nil {
-		d.init()
-	}
+func New(input string) Day1 {
+	d := Day1{}
 
-	maxCalories := 0
-	for _, elf := range d.elves {
-		maxCalories = array.Max([]int{maxCalories, array.Sum(elf)})
-	}
-
-	return maxCalories
-}
-
-func (d Day1) CaloriesTopThreeElves() int {
-	if d.elves == nil {
-		d.init()
-	}
-
-	elfCalories := []int{}
-	for _, elf := range d.elves {
-		elfCalories = append(elfCalories, array.Sum(elf))
-	}
-
-	sort.Ints(elfCalories)
-
-	return array.Sum(elfCalories[len(elfCalories)-3:])
-}
-
-func (d *Day1) init() {
-	for _, elf := range strings.Split(d.Input, "\n\n") {
+	for _, elf := range strings.Split(input, "\n\n") {
 		calorieCounts := []int{}
 		for _, snack := range strings.Split(elf, "\n") {
 			snackCalories, _ := strconv.Atoi(snack)
@@ -50,4 +23,26 @@ func (d *Day1) init() {
 		}
 		d.elves = append(d.elves, calorieCounts)
 	}
+
+	return d
+}
+
+func (d Day1) MaxCaloriesSingleElf() int {
+	return array.Max(d.reduceElves())
+}
+
+func (d Day1) CaloriesTopThreeElves() int {
+	elfCalories := d.reduceElves()
+
+	sort.Sort(sort.Reverse(sort.IntSlice(elfCalories)))
+
+	return array.Sum(array.Take(elfCalories, 3))
+}
+
+func (d Day1) reduceElves() []int {
+	elfCalories := []int{}
+	for _, elf := range d.elves {
+		elfCalories = append(elfCalories, array.Sum(elf))
+	}
+	return elfCalories
 }
