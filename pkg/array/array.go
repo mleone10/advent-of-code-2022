@@ -40,6 +40,15 @@ func Sum[T constraints.Ordered](args []T) T {
 	return sum
 }
 
+// Take returns the first n elements of the given slice.
+func Take[T any](arr []T, n int) []T {
+	if len(arr) <= n {
+		return arr
+	}
+
+	return arr[:n]
+}
+
 // FrequencyList accepts a slice of comparable-type values and returns a map[T]int representing how many times each key appears in the input slice.
 func FrequencyList[T comparable](args []T) map[T]int {
 	freqs := map[T]int{}

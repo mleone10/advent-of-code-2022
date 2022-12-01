@@ -22,6 +22,13 @@ func TestSum(t *testing.T) {
 	assert.Equal(t, array.Sum([]float64{1.1, 2.2, 3.3}), 6.6)
 }
 
+func TestTake(t *testing.T) {
+	assert.ArraysEqual(t, array.Take([]int{1, 2, 3, 4, 5}, 3), []int{1, 2, 3})
+	assert.ArraysEqual(t, array.Take([]int{1, 2, 3}, 3), []int{1, 2, 3})
+	assert.ArraysEqual(t, array.Take([]int{1, 2}, 3), []int{1, 2})
+	assert.ArraysEqual(t, array.Take([]string{"foo", "bar", "fizz", "buzz"}, 3), []string{"foo", "bar", "fizz"})
+}
+
 func TestFrequencyList(t *testing.T) {
 	testIntFreqs := array.FrequencyList([]int{5, 5, 10, 10, 10, 15})
 	assert.Equal(t, testIntFreqs[5], 2)
