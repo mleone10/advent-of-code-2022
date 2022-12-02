@@ -1,23 +1,26 @@
 // Array contains utility functions to simplify common operations on slices and arrays.
 package array
 
-import "golang.org/x/exp/constraints"
+import (
+	"golang.org/x/exp/constraints"
+)
 
-// Max returns the largest value among a slice of Ordered values via the `>` operator.
-func Max[T constraints.Ordered](args []T) T {
-	max := args[0]
-
-	for _, arg := range args[1:] {
-		if arg > max {
-			max = arg
-		}
-	}
-
-	return max
+type number interface {
+	constraints.Float | constraints.Integer
 }
 
-// Min returns the smallest value among a slice of Ordered values via the `<` operator.
-func Min[T constraints.Ordered](args []T) T {
+// Max returns the largest value among a slice of values via the `>` operator.
+func Max[T number](args []T) T {
+	return Reduce(args, func(max, v T) T {
+		if max > v {
+			return max
+		}
+		return v
+	}, 0)
+}
+
+// Min returns the smallest value among a slice of values via the `<` operator.
+func Min[T number](args []T) T {
 	min := args[0]
 
 	for _, arg := range args[1:] {
@@ -29,15 +32,11 @@ func Min[T constraints.Ordered](args []T) T {
 	return min
 }
 
-// Sum returns the aggregate total of a slice of Ordered values via the `+=` operator.
-func Sum[T constraints.Ordered](args []T) T {
-	sum := args[0]
-
-	for _, arg := range args[1:] {
-		sum += arg
-	}
-
-	return sum
+// Sum returns the aggregate total of a slice of values via the `+=` operator.
+func Sum[T number](args []T) T {
+	return Reduce(args, func(acc, v T) T {
+		return acc + v
+	}, 0)
 }
 
 // Take returns the first n elements of the given slice.
@@ -61,7 +60,7 @@ func FrequencyList[T comparable](args []T) map[T]int {
 }
 
 // SlidingSum iterates over a given slice and sums sub-slices of w-width elements and returns an ordered slice of those sums.
-func SlidingSum[T constraints.Ordered](w int, args []T) []T {
+func SlidingSum[T number](w int, args []T) []T {
 	if len(args) < w {
 		return []T{}
 	}
