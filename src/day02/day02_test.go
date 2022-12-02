@@ -1,4 +1,4 @@
-package day{{ printf "%02d" .DayNum }}_test
+package day02_test
 
 import "testing"
 
