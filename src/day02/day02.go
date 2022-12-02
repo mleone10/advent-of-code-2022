@@ -1,5 +1,79 @@
 package day02
 
+import "strings"
+
 type Day02 struct {
-  Input string
+	rounds []round
+}
+
+type round struct {
+	oppMove string
+	myMove  string
+}
+
+var scoreShape = map[string]int{
+	"X": 1,
+	"Y": 2,
+	"Z": 3,
+}
+
+var scoreResult = map[round]int{
+	{"A", "X"}: 3,
+	{"A", "Y"}: 6,
+	{"A", "Z"}: 0,
+	{"B", "X"}: 0,
+	{"B", "Y"}: 3,
+	{"B", "Z"}: 6,
+	{"C", "X"}: 6,
+	{"C", "Y"}: 0,
+	{"C", "Z"}: 3,
+}
+
+var myMoveAi = map[string]map[string]string{
+	"A": {
+		"X": "Z",
+		"Y": "X",
+		"Z": "Y",
+	},
+	"B": {
+		"X": "X",
+		"Y": "Y",
+		"Z": "Z",
+	},
+	"C": {
+		"X": "Y",
+		"Y": "Z",
+		"Z": "X",
+	},
+}
+
+func New(input string) Day02 {
+	rds := []round{}
+
+	for _, r := range strings.Split(input, "\n") {
+		moves := strings.Split(r, " ")
+		rds = append(rds, round{moves[0], moves[1]})
+	}
+
+	return Day02{rds}
+}
+
+func (d Day02) SolvePartOne() int {
+	score := 0
+	for _, r := range d.rounds {
+		score += simulateRound(r)
+	}
+	return score
+}
+
+func (d Day02) SolvePartTwo() int {
+	score := 0
+	for _, r := range d.rounds {
+		score += simulateRound(round{r.oppMove, myMoveAi[r.oppMove][r.myMove]})
+	}
+	return score
+}
+
+func simulateRound(r round) int {
+	return scoreShape[r.myMove] + scoreResult[r]
 }
