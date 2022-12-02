@@ -21,15 +21,12 @@ func Max[T number](args []T) T {
 
 // Min returns the smallest value among a slice of values via the `<` operator.
 func Min[T number](args []T) T {
-	min := args[0]
-
-	for _, arg := range args[1:] {
-		if arg < min {
-			min = arg
+	return Reduce(args[1:], func(min, v T) T {
+		if min < v {
+			return min
 		}
-	}
-
-	return min
+		return v
+	}, args[0])
 }
 
 // Sum returns the aggregate total of a slice of values via the `+=` operator.
