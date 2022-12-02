@@ -2,4 +2,15 @@ package day{{ printf "%02d" .DayNum }}_test
 
 import "testing"
 
-func TestParseInput(t *testing.T) {}
+var tcs = []struct {
+	input           string
+	expectedPartOne int
+	expectedPartTwo int
+}{}
+
+func TestSolvePartOne(t *testing.T) {}
+
+func TestSolvePartTwo(t *testing.T) {}
+
+const testInput = ``
+const input = ``
