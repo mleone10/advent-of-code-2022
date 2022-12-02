@@ -1,6 +1,10 @@
 package day02
 
-import "strings"
+import (
+	"strings"
+
+	"github.com/mleone10/advent-of-code-2022/pkg/array"
+)
 
 type Day02 struct {
 	rounds []round
@@ -64,19 +68,15 @@ func New(input string) Day02 {
 }
 
 func (d Day02) SolvePartOne() int {
-	score := 0
-	for _, r := range d.rounds {
-		score += simulateRound(r)
-	}
-	return score
+	return array.Reduce(d.rounds, func(s int, r round) int {
+		return s + simulateRound(r)
+	}, 0)
 }
 
 func (d Day02) SolvePartTwo() int {
-	score := 0
-	for _, r := range d.rounds {
-		score += simulateRound(round{r.oppMove, myMoveAi[r.oppMove][r.myMove]})
-	}
-	return score
+	return array.Reduce(d.rounds, func(s int, r round) int {
+		return s + simulateRound(round{r.oppMove, myMoveAi[r.oppMove][r.myMove]})
+	}, 0)
 }
 
 func simulateRound(r round) int {

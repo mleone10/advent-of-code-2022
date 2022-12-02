@@ -46,3 +46,24 @@ func TestSlidingSum(t *testing.T) {
 	assert.ArraysEqual(t, array.SlidingSum(4, []int{1, 2, 3, 4, 5, 6}), []int{10, 14, 18})
 	assert.ArraysEqual(t, array.SlidingSum(3, []int{1, 2}), []int{})
 }
+
+func TestMap(t *testing.T) {
+	assert.ArraysEqual(t, array.Map([]int{1, 2, 3, 4, 5}, func(i int) int { return i * i }), []int{1, 4, 9, 16, 25})
+	assert.ArraysEqual(t, array.Map([]string{"foo", "bar", "fizz", "buzz"}, func(i string) int { return len(i) }), []int{3, 3, 4, 4})
+}
+
+func TestReduce(t *testing.T) {
+	assert.Equal(t, array.Reduce([]int{1, 2, 3, 4, 5}, func(acc, v int) int { return acc + v }, 0), 15)
+	assert.Equal(t, array.Reduce([]int{1, 2, 3, 4, 5}, func(acc, v int) int {
+		// Recreating `max(int, int)`
+		if acc > v {
+			return acc
+		}
+		return v
+	}, 0), 5)
+}
+
+func TestFilter(t *testing.T) {
+	assert.ArraysEqual(t, array.Filter([]int{1, 2, 3, 4, 5, 6}, func(i int) bool { return i%2 == 0 }), []int{2, 4, 6})
+	assert.ArraysEqual(t, array.Filter([]string{"foo", "bar", "fizz", "buzz"}, func(s string) bool { return s[0] == 'f' }), []string{"foo", "fizz"})
+}

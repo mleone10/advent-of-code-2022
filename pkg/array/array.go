@@ -74,3 +74,32 @@ func SlidingSum[T constraints.Ordered](w int, args []T) []T {
 
 	return slidingSum
 }
+
+// Map applies a function to each element in a given slice and returns a new slice of the results.
+func Map[T, R any](arr []T, f func(T) R) []R {
+	var res []R
+	for _, v := range arr {
+		res = append(res, f(v))
+	}
+	return res
+}
+
+// Reduce applies a function to each element in a slice, remembering the result of that function over subsequent iterations
+func Reduce[T, R any](arr []T, f func(R, T) R, init R) R {
+	res := init
+	for _, v := range arr {
+		res = f(res, v)
+	}
+	return res
+}
+
+// Filter applies a boolean function `f` to each element in a slice and returns a new slice containing only those elements `e` for which `f(e)` evaluates to true.
+func Filter[T any](arr []T, f func(T) bool) []T {
+	var res []T
+	for _, v := range arr {
+		if f(v) {
+			res = append(res, v)
+		}
+	}
+	return res
+}
