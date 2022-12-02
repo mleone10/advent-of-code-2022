@@ -7,16 +7,20 @@ type Day02 struct {
 }
 
 type round struct {
+	// oppMove is my opponent's move: A = rock, B = paper, C = scissors
 	oppMove string
-	myMove  string
+	// myMove is my move: X = rock, Y = paper, Z = scissors
+	myMove string
 }
 
+// scoreShape represents the static point value for my moves: 1 if I choose rock, 2 if paper, 3 if scissors.
 var scoreShape = map[string]int{
 	"X": 1,
 	"Y": 2,
 	"Z": 3,
 }
 
+// scoreResult represents the win/loss/draw point value for all nine possible outcomes.
 var scoreResult = map[round]int{
 	{"A", "X"}: 3,
 	{"A", "Y"}: 6,
@@ -29,6 +33,7 @@ var scoreResult = map[round]int{
 	{"C", "Z"}: 3,
 }
 
+// myMoveAi provides my ideal move given an opponent's move and a desired outcome (X means lose, Y draw, Z win)
 var myMoveAi = map[string]map[string]string{
 	"A": {
 		"X": "Z",
