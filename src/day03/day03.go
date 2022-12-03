@@ -10,10 +10,12 @@ type Day03 struct {
 	Input string
 }
 
+// TODO: Move this elsewhere, perhaps as a HalveString.  Or refactor as SplitStringNParts.
 func GroupCompartments(contents string) []string {
 	return []string{contents[:len(contents)/2], contents[len(contents)/2:]}
 }
 
+// TODO: Move this elsewhere, refactor as a generalized "find common characters between N strings" method
 func FindCommonContents(compartments []string) string {
 	common := compartments[0]
 

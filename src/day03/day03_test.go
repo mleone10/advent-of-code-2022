@@ -48,9 +48,11 @@ func TestCalculatePriority(t *testing.T) {
 
 func TestSolvePartOne(t *testing.T) {
 	for _, tc := range tcs {
-		assert.Equal(t, array.Reduce(strings.Split(tc.input, "\n"), func(sum int, line string) int {
+		// For part one, we need to calculate a priority for each line and aggregate them into one sum.  Good opportunity for Reduce.
+		sumPriorities := array.Reduce(strings.Split(tc.input, "\n"), func(sum int, line string) int {
 			return sum + day03.CalculatePriority(day03.FindCommonContents(day03.GroupCompartments(line))[0])
-		}, 0), tc.expectedPartOne)
+		}, 0)
+		assert.Equal(t, sumPriorities, tc.expectedPartOne)
 	}
 }
 
@@ -58,6 +60,7 @@ func TestSolvePartTwo(t *testing.T) {
 	for _, tc := range tcs {
 		sacks := strings.Split(tc.input, "\n")
 		sum := 0
+		// Since we're iterating over _groups_ of lines in part two, Reduce is a bit harder to use.  We would have to pre-group the lines into a `[][]string`, then Reduce the outer slice.  This is easier.
 		for i := 0; i < len(sacks)/3; i++ {
 			sum += day03.CalculatePriority(day03.FindCommonContents([]string{sacks[i*3], sacks[i*3+1], sacks[i*3+2]})[0])
 		}
