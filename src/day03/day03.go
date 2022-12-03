@@ -2,6 +2,8 @@ package day03
 
 import (
 	"strings"
+
+	"github.com/mleone10/advent-of-code-2022/pkg/array"
 )
 
 type Day03 struct {
@@ -18,7 +20,7 @@ func FindCommonContents(compartments []string) string {
 	var newCommon []rune
 	for _, comp := range compartments[1:] {
 		for _, char := range comp {
-			if Contains([]rune(common), char) {
+			if array.Contains([]rune(common), char) {
 				newCommon = append(newCommon, char)
 			}
 		}
@@ -27,16 +29,6 @@ func FindCommonContents(compartments []string) string {
 	}
 
 	return common
-}
-
-// TODO: move this to array package
-func Contains[T comparable](arr []T, find T) bool {
-	for _, v := range arr {
-		if v == find {
-			return true
-		}
-	}
-	return false
 }
 
 func CalculatePriority(b byte) int {

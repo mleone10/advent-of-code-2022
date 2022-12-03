@@ -67,3 +67,10 @@ func TestFilter(t *testing.T) {
 	assert.ArraysEqual(t, array.Filter([]int{1, 2, 3, 4, 5, 6}, func(i int) bool { return i%2 == 0 }), []int{2, 4, 6})
 	assert.ArraysEqual(t, array.Filter([]string{"foo", "bar", "fizz", "buzz"}, func(s string) bool { return s[0] == 'f' }), []string{"foo", "fizz"})
 }
+
+func TestContains(t *testing.T) {
+	assert.Equal(t, array.Contains([]int{1, 2, 3, 4, 5}, 1), true)
+	assert.Equal(t, array.Contains([]int{1, 2, 3, 4, 5}, 6), false)
+	assert.Equal(t, array.Contains([]string{"foo", "bar", "fizz", "buzz"}, "foo"), true)
+	assert.Equal(t, array.Contains([]string{"foo", "bar", "fizz", "buzz"}, "quix"), false)
+}

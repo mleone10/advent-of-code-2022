@@ -99,3 +99,13 @@ func Filter[T any](arr []T, f func(T) bool) []T {
 	}
 	return res
 }
+
+// Contains determines if a value `v` is found within a given slice `arr`, returning true if so and false otherwise.
+func Contains[T comparable](arr []T, v T) bool {
+	for _, a := range arr {
+		if a == v {
+			return true
+		}
+	}
+	return false
+}
