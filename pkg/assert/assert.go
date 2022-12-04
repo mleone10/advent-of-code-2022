@@ -1,6 +1,10 @@
 package assert
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/mleone10/advent-of-code-2022/pkg/array"
+)
 
 // TODO: implement ContainsKey, ContainsValue assertions
 
@@ -20,27 +24,16 @@ func NotEqual[T comparable](t *testing.T, actual, expected T) {
 
 // ArraysEqual asserts that two arrays of the same comparable type are of the same length, contenst, and order.
 func ArraysEqual[T comparable](t *testing.T, actual, expected []T) {
-	if len(actual) != len(expected) {
-		t.Errorf("arrays are not equal length: wanted len=%v %v, got len=%v %v", len(expected), expected, len(actual), actual)
-		return
-	}
-
-	for i, v := range actual {
-		if expected[i] != v {
-			t.Errorf("elements at index %d do not match: wanted %v, got %v", i, expected[i], v)
-		}
+	if !array.Equal(actual, expected) {
+		t.Errorf("arrays are not equal: %+v, %v", expected, actual)
 	}
 }
 
 // Contains asserts that a given array contains an expected value.
 func Contains[T comparable](t *testing.T, arr []T, val T) {
-	for _, v := range arr {
-		if v == val {
-			return
-		}
+	if !array.Contains(arr, val) {
+		t.Errorf("value %+v not found in slice", val)
 	}
-
-	t.Errorf("value %+v not found in slice", val)
 }
 
 // DoesNotContain asserts that a given array does not contain a certain value.

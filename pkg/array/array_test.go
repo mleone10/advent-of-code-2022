@@ -74,3 +74,16 @@ func TestContains(t *testing.T) {
 	assert.Equal(t, array.Contains([]string{"foo", "bar", "fizz", "buzz"}, "foo"), true)
 	assert.Equal(t, array.Contains([]string{"foo", "bar", "fizz", "buzz"}, "quix"), false)
 }
+
+func TestContainsSubarray(t *testing.T) {
+	assert.Equal(t, array.ContainsSubarray([]int{1, 2, 3, 4}, []int{2, 3}), true)
+	assert.Equal(t, array.ContainsSubarray([]int{1, 2, 3}, []int{3}), true)
+	assert.Equal(t, array.ContainsSubarray([]int{1, 2, 3}, []int{4, 5, 6}), false)
+}
+
+func TestEqual(t *testing.T) {
+	assert.Equal(t, array.Equal([]int{1, 2, 3, 4}, []int{1, 2, 3, 4}), true)
+	assert.Equal(t, array.Equal([]int{1, 2, 3, 4}, []int{1, 2, 3}), false)
+	assert.Equal(t, array.Equal([]int{1, 2, 3, 4}, []int{4, 3, 2, 1}), false)
+	assert.Equal(t, array.Equal([]string{"foo", "bar"}, []string{"foo", "bar"}), true)
+}

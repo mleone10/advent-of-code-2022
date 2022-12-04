@@ -109,3 +109,36 @@ func Contains[T comparable](arr []T, v T) bool {
 	}
 	return false
 }
+
+// ContainsSubarray returns true if `arr` contains all elements of `sub` in the same order.
+func ContainsSubarray[T comparable](arr, sub []T) bool {
+	if len(arr) < len(sub) {
+		return false
+	}
+	if len(arr) == len(sub) {
+		return Equal(arr, sub)
+	}
+
+	for i, a := range arr[:len(arr)-len(sub)+1] {
+		if a == sub[0] && Equal(arr[i:i+len(sub)], sub) {
+			return true
+		}
+	}
+
+	return false
+}
+
+// Equal returns true if two slices are of the same length and contents.
+func Equal[T comparable](x, y []T) bool {
+	if len(x) != len(y) {
+		return false
+	}
+
+	for i, v := range x {
+		if v != y[i] {
+			return false
+		}
+	}
+
+	return true
+}
