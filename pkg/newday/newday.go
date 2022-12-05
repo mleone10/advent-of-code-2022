@@ -38,6 +38,16 @@ func InitializeDay(dayNum int) error {
 		return err
 	}
 
+	_, err = createFile(fmt.Sprintf("src/day%02[1]d/input.txt", dayNum))
+	if err != nil {
+		return err
+	}
+
+	_, err = createFile(fmt.Sprintf("src/day%02[1]d/test_input.txt", dayNum))
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -51,10 +61,7 @@ func createDayDirectory(dayNum int) error {
 }
 
 func writeTemplateToFile(t *template.Template, tvs templateValues, filePath string) error {
-	file, err := os.Create(filePath)
-	if err != nil {
-		return fmt.Errorf("failed to create empty file: %w", err)
-	}
+	file, err := createFile(filePath)
 
 	err = t.Execute(file, tvs)
 	if err != nil {
@@ -62,4 +69,12 @@ func writeTemplateToFile(t *template.Template, tvs templateValues, filePath stri
 	}
 
 	return nil
+}
+
+func createFile(path string) (*os.File, error) {
+	file, err := os.Create(path)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create empty file: %w", err)
+	}
+	return file, nil
 }
