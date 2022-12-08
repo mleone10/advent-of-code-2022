@@ -7,6 +7,7 @@ import (
 
 	"github.com/mleone10/advent-of-code-2022/pkg/array"
 	"github.com/mleone10/advent-of-code-2022/pkg/assert"
+	"github.com/mleone10/advent-of-code-2022/pkg/maputil"
 	"github.com/mleone10/advent-of-code-2022/src/day07"
 )
 
@@ -16,6 +17,8 @@ var testInput string
 //go:embed input.txt
 var input string
 
+const DiskNeeded = 30000000
+
 var tcs = []struct {
 	input           string
 	expectedPartOne int
@@ -24,11 +27,17 @@ var tcs = []struct {
 	{
 		input:           testInput,
 		expectedPartOne: 95437,
+		expectedPartTwo: 24933642,
+	},
+	{
+		input:           input,
+		expectedPartOne: 1307902,
+		expectedPartTwo: 7068748,
 	},
 }
 
 func TestChangeDir(t *testing.T) {
-	d := day07.Day07{}
+	d := day07.FileSystem{}
 	d.ChangeDir("/")
 	assert.Equal(t, d.Pwd(), "/")
 	d.ChangeDir("a")
@@ -38,7 +47,7 @@ func TestChangeDir(t *testing.T) {
 }
 
 func TestDiscover(t *testing.T) {
-	d := day07.Day07{}
+	d := day07.New([]string{})
 	d.ChangeDir("/")
 	d.Discover("dir a")
 	d.Discover("123 b.txt")
@@ -47,21 +56,34 @@ func TestDiscover(t *testing.T) {
 	assert.Contains(t, d.List(), "c.txt")
 }
 
+func TestTotalUsedSpace(t *testing.T) {
+	d := day07.New(strings.Split(strings.TrimSpace(testInput), "\n"))
+	assert.Equal(t, d.UsedSpace(), 48381165)
+}
+
 func TestSolvePartOne(t *testing.T) {
 	for _, tc := range tcs {
-		d := array.Reduce(strings.Split(strings.TrimSpace(tc.input), "\n"), func(d day07.Day07, cmd string) day07.Day07 {
-			switch cmd[:4] {
-			case "$ cd":
-				args := strings.Split(cmd, " ")
-				d.ChangeDir(args[2])
-			case "$ ls":
-			default:
-				d.Discover(cmd)
+		d := day07.New(strings.Split(strings.TrimSpace(tc.input), "\n"))
+		sum := 0
+		for _, size := range d.DirectorySizes() {
+			if size <= 100000 {
+				sum += size
 			}
-			return d
-		}, day07.Day07{})
-		assert.Equal(t, d.SumOfDirsMaxNBytes(100000), tc.expectedPartOne)
+		}
+		assert.Equal(t, sum, tc.expectedPartOne)
 	}
 }
 
-func TestSolvePartTwo(t *testing.T) {}
+func TestSolvePartTwo(t *testing.T) {
+	for _, tc := range tcs {
+		d := day07.New(strings.Split(strings.TrimSpace(tc.input), "\n"))
+		candidates := map[string]int{}
+		spaceNeeded := DiskNeeded - d.FreeSpace()
+		for dir, size := range d.DirectorySizes() {
+			if size >= spaceNeeded {
+				candidates[dir] = size
+			}
+		}
+		assert.Equal(t, array.Min(maputil.Values(candidates)), tc.expectedPartTwo)
+	}
+}
