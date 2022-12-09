@@ -142,3 +142,12 @@ func Equal[T comparable](x, y []T) bool {
 
 	return true
 }
+
+// Reverse returns a new slice which is a reversed copy of the original one.
+func Reverse[T any](arr []T) []T {
+	var rev []T
+	for i := range arr {
+		rev = append(rev, arr[len(arr)-1-i])
+	}
+	return rev
+}

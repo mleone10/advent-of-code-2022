@@ -87,3 +87,8 @@ func TestEqual(t *testing.T) {
 	assert.Equal(t, array.Equal([]int{1, 2, 3, 4}, []int{4, 3, 2, 1}), false)
 	assert.Equal(t, array.Equal([]string{"foo", "bar"}, []string{"foo", "bar"}), true)
 }
+
+func TestReverse(t *testing.T) {
+	assert.ArraysEqual(t, array.Reverse([]int{1, 2, 3, 4, 5, 6}), []int{6, 5, 4, 3, 2, 1})
+	assert.ArraysEqual(t, array.Reverse([]string{"foo", "bar", "fizz", "buzz"}), []string{"buzz", "fizz", "bar", "foo"})
+}
