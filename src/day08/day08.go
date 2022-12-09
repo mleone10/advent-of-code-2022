@@ -23,29 +23,55 @@ func NewGrid(input string) grid.Plane[int] {
 	return g
 }
 
+func northTreeHeights(g grid.Plane[int], x, y int) []int {
+	return g.Col(x)[:y]
+}
+
+func southTreeHeights(g grid.Plane[int], x, y int) []int {
+	return g.Col(x)[y+1:]
+}
+
+func westTreeHeights(g grid.Plane[int], x, y int) []int {
+	return g.Row(y)[:x]
+}
+
+func eastTreeHeights(g grid.Plane[int], x, y int) []int {
+	return g.Row(y)[x+1:]
+}
+
 func IsVisible(g grid.Plane[int], x, y int) bool {
 	if x == 0 || y == 0 || x == g.Width()-1 || y == g.Height()-1 {
 		// Point is the edge of the map, thus is visible
 		return true
 	}
-	return isVisibleFromRight(g, x, y) ||
-		isVisibleFromLeft(g, x, y) ||
-		isVisibleFromTop(g, x, y) ||
-		isVisibleFromBottom(g, x, y)
+	return isVisibleThroughTrees(array.Reverse(northTreeHeights(g, x, y)))(g, x, y) ||
+		isVisibleThroughTrees(southTreeHeights(g, x, y))(g, x, y) ||
+		isVisibleThroughTrees(array.Reverse(westTreeHeights(g, x, y)))(g, x, y) ||
+		isVisibleThroughTrees(eastTreeHeights(g, x, y))(g, x, y)
 }
 
-func isVisibleFromTop(g grid.Plane[int], x, y int) bool {
-	return array.Max(g.Col(x)[:y]) < g.Get(x, y)
+func isVisibleThroughTrees(trees []int) func(g grid.Plane[int], x, y int) bool {
+	return func(g grid.Plane[int], x, y int) bool {
+		return array.Max(trees) < g.Get(x, y)
+	}
 }
 
-func isVisibleFromBottom(g grid.Plane[int], x, y int) bool {
-	return array.Max(g.Col(x)[y+1:]) < g.Get(x, y)
+func ScenicScore(g grid.Plane[int], x, y int) int {
+	return directionalScenicScore(array.Reverse(northTreeHeights(g, x, y)))(g, x, y) *
+		directionalScenicScore(southTreeHeights(g, x, y))(g, x, y) *
+		directionalScenicScore(array.Reverse(westTreeHeights(g, x, y)))(g, x, y) *
+		directionalScenicScore(eastTreeHeights(g, x, y))(g, x, y)
 }
 
-func isVisibleFromLeft(g grid.Plane[int], x, y int) bool {
-	return array.Max(g.Row(y)[:x]) < g.Get(x, y)
-}
-
-func isVisibleFromRight(g grid.Plane[int], x, y int) bool {
-	return array.Max(g.Row(y)[x+1:]) < g.Get(x, y)
+func directionalScenicScore(trees []int) func(g grid.Plane[int], x, y int) int {
+	return func(g grid.Plane[int], x, y int) int {
+		sightLine := 0
+		for i := 0; i < len(trees); i++ {
+			sightLine += 1
+			if trees[i] >= g.Get(x, y) {
+				break
+			}
+		}
+		return sightLine
+	}
 }
