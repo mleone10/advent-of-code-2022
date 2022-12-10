@@ -31,56 +31,61 @@ var tcs = []struct {
 	},
 }
 
+func TestNewRope(t *testing.T) {
+	r := day09.NewRope(3)
+	assert.Equal(t, r.Length(), 3)
+}
+
 func TestMoveHead(t *testing.T) {
 	r := day09.Rope{}
-	r.MoveHead(day09.Dir["D"], 3)
-	assert.Equal(t, r.Head.X, 0)
-	assert.Equal(t, r.Head.Y, 3)
-	r.MoveHead(day09.Dir["U"], 3)
-	assert.Equal(t, r.Head.X, 0)
-	assert.Equal(t, r.Head.Y, 0)
-	r.MoveHead(day09.Dir["L"], 3)
-	assert.Equal(t, r.Head.X, -3)
-	assert.Equal(t, r.Head.Y, 0)
-	r.MoveHead(day09.Dir["R"], 3)
-	assert.Equal(t, r.Head.X, 0)
-	assert.Equal(t, r.Head.Y, 0)
+	r.MoveHead(day09.Cmds["D"], 3)
+	assert.Equal(t, r.Head.Pos.X, 0)
+	assert.Equal(t, r.Head.Pos.Y, 3)
+	r.MoveHead(day09.Cmds["U"], 3)
+	assert.Equal(t, r.Head.Pos.X, 0)
+	assert.Equal(t, r.Head.Pos.Y, 0)
+	r.MoveHead(day09.Cmds["L"], 3)
+	assert.Equal(t, r.Head.Pos.X, -3)
+	assert.Equal(t, r.Head.Pos.Y, 0)
+	r.MoveHead(day09.Cmds["R"], 3)
+	assert.Equal(t, r.Head.Pos.X, 0)
+	assert.Equal(t, r.Head.Pos.Y, 0)
 }
 
 func TestMoveHeadMovesTail(t *testing.T) {
 	r := day09.Rope{}
-	r.MoveHead(day09.Dir["D"], 3)
-	assert.Equal(t, r.Head.X, 0)
-	assert.Equal(t, r.Head.Y, 3)
-	assert.Equal(t, r.Tail.X, 0)
-	assert.Equal(t, r.Tail.Y, 2)
+	r.MoveHead(day09.Cmds["D"], 3)
+	assert.Equal(t, r.Head.Pos.X, 0)
+	assert.Equal(t, r.Head.Pos.Y, 3)
+	assert.Equal(t, r.Tail.Pos.X, 0)
+	assert.Equal(t, r.Tail.Pos.Y, 2)
 
-	r.MoveHead(day09.Dir["U"], 3)
-	assert.Equal(t, r.Head.X, 0)
-	assert.Equal(t, r.Head.Y, 0)
-	assert.Equal(t, r.Tail.X, 0)
-	assert.Equal(t, r.Tail.Y, 1)
+	r.MoveHead(day09.Cmds["U"], 3)
+	assert.Equal(t, r.Head.Pos.X, 0)
+	assert.Equal(t, r.Head.Pos.Y, 0)
+	assert.Equal(t, r.Tail.Pos.X, 0)
+	assert.Equal(t, r.Tail.Pos.Y, 1)
 
-	r.MoveHead(day09.Dir["L"], 3)
-	assert.Equal(t, r.Head.X, -3)
-	assert.Equal(t, r.Head.Y, 0)
-	assert.Equal(t, r.Tail.X, -2)
-	assert.Equal(t, r.Tail.Y, 0)
+	r.MoveHead(day09.Cmds["L"], 3)
+	assert.Equal(t, r.Head.Pos.X, -3)
+	assert.Equal(t, r.Head.Pos.Y, 0)
+	assert.Equal(t, r.Tail.Pos.X, -2)
+	assert.Equal(t, r.Tail.Pos.Y, 0)
 
-	r.MoveHead(day09.Dir["R"], 3)
-	assert.Equal(t, r.Head.X, 0)
-	assert.Equal(t, r.Head.Y, 0)
-	assert.Equal(t, r.Tail.X, -1)
-	assert.Equal(t, r.Tail.Y, 0)
+	r.MoveHead(day09.Cmds["R"], 3)
+	assert.Equal(t, r.Head.Pos.X, 0)
+	assert.Equal(t, r.Head.Pos.Y, 0)
+	assert.Equal(t, r.Tail.Pos.X, -1)
+	assert.Equal(t, r.Tail.Pos.Y, 0)
 }
 
 func TestMoveHeadDiagonal(t *testing.T) {
-	r := day09.Rope{Head: grid.Point{X: 1, Y: -1}}
-	r.MoveHead(day09.Dir["U"], 1)
-	assert.Equal(t, r.Head.X, 1)
-	assert.Equal(t, r.Head.Y, -2)
-	assert.Equal(t, r.Tail.X, 1)
-	assert.Equal(t, r.Tail.Y, -1)
+	r := day09.Rope{Head: day09.Knot{Pos: grid.Point{X: 1, Y: -1}}}
+	r.MoveHead(day09.Cmds["U"], 1)
+	assert.Equal(t, r.Head.Pos.X, 1)
+	assert.Equal(t, r.Head.Pos.Y, -2)
+	assert.Equal(t, r.Tail.Pos.X, 1)
+	assert.Equal(t, r.Tail.Pos.Y, -1)
 }
 
 func TestSolvePartOne(t *testing.T) {
