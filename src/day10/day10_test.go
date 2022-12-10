@@ -12,21 +12,29 @@ import (
 //go:embed test_input.txt
 var testInput string
 
+//go:embed test_output.txt
+var testOutput string
+
 //go:embed input.txt
 var input string
+
+//go:embed output.txt
+var output string
 
 var tcs = []struct {
 	input           string
 	expectedPartOne int
-	expectedPartTwo int
+	expectedPartTwo string
 }{
 	{
 		input:           testInput,
 		expectedPartOne: 13140,
+		expectedPartTwo: testOutput,
 	},
 	{
 		input:           input,
 		expectedPartOne: 13740,
+		expectedPartTwo: output,
 	},
 }
 
@@ -52,4 +60,9 @@ func partOneProductSignalStrength(cs day10.CommSystem) int {
 		cs.SignalStrengthCycleN(220)
 }
 
-func TestSolvePartTwo(t *testing.T) {}
+func TestSolvePartTwo(t *testing.T) {
+	for _, tc := range tcs {
+		cs := day10.LoadProgram(strings.Split(strings.TrimSpace(tc.input), "\n"))
+		assert.Equal(t, cs.Render(), strings.TrimSpace(tc.expectedPartTwo))
+	}
+}

@@ -42,3 +42,22 @@ func (cs CommSystem) RegisterX() int {
 func (cs CommSystem) SignalStrengthCycleN(n int) int {
 	return cs.cycles[n-1] * n
 }
+
+func (cs CommSystem) Render() string {
+	var rendered string
+
+	line := 1
+	for cycle, x := range cs.cycles {
+		if cycle == line*40 {
+			rendered += "\n"
+			line++
+		}
+		if cycle-(line-1)*40 >= x-1 && cycle-(line-1)*40 <= x+1 {
+			rendered += "#"
+		} else {
+			rendered += "."
+		}
+	}
+
+	return rendered
+}
