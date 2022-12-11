@@ -44,3 +44,13 @@ func TestLength(t *testing.T) {
 	}
 	assert.Equal(t, head.Length(), 11)
 }
+
+func TestValueModification(t *testing.T) {
+	type testType struct {
+		innerVal int
+	}
+	tt := testType{1}
+	n := linkedlist.NewNode(&tt)
+	n.Value().innerVal += 1
+	assert.Equal(t, tt.innerVal, 2)
+}
