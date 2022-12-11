@@ -54,3 +54,21 @@ func TestValueModification(t *testing.T) {
 	n.Value().innerVal += 1
 	assert.Equal(t, tt.innerVal, 2)
 }
+
+func TestHead(t *testing.T) {
+	n := linkedlist.NewNode(1)
+	m := linkedlist.NewNode(2)
+	o := linkedlist.NewNode(3)
+	n.LinkNext(m)
+	m.LinkNext(o)
+	assert.Equal(t, o.Head(), n)
+}
+
+func TestTail(t *testing.T) {
+	n := linkedlist.NewNode(1)
+	m := linkedlist.NewNode(2)
+	o := linkedlist.NewNode(3)
+	n.LinkNext(m)
+	m.LinkNext(o)
+	assert.Equal(t, n.Tail(), o)
+}

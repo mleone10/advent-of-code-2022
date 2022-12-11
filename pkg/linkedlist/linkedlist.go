@@ -36,6 +36,20 @@ func (n Node[T]) Prev() *Node[T] {
 	return n.prev
 }
 
+func (n *Node[T]) Head() *Node[T] {
+	if n.prev == nil {
+		return n
+	}
+	return n.prev.Head()
+}
+
+func (n *Node[T]) Tail() *Node[T] {
+	if n.next == nil {
+		return n
+	}
+	return n.next.Tail()
+}
+
 func (n Node[T]) Length() int {
 	if n.next != nil {
 		return 1 + n.next.Length()
