@@ -31,7 +31,7 @@ var tcs = []struct {
 	{
 		input:           input,
 		expectedPartOne: 6236,
-		expectedPartTwo: 0, // 2231 too low, 2499 too high,
+		expectedPartTwo: 2449,
 	},
 }
 

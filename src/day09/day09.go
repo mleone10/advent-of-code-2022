@@ -1,13 +1,13 @@
 package day09
 
 import (
-	"log"
 	"strconv"
 	"strings"
 
 	"github.com/mleone10/advent-of-code-2022/pkg/grid"
 	"github.com/mleone10/advent-of-code-2022/pkg/linkedlist"
 	"github.com/mleone10/advent-of-code-2022/pkg/maputil"
+	"github.com/mleone10/advent-of-code-2022/pkg/mathutil"
 )
 
 type Dir grid.Point
@@ -61,7 +61,6 @@ func moveHead(r *linkedlist.Node[*Knot], d Dir) {
 	r.Value().Pos.X += d.X
 	r.Value().Pos.Y += d.Y
 	r.Value().Visit()
-	log.Println(r.Value().Pos)
 
 	if r.Next() != nil {
 		updateKnot(r.Next())
@@ -69,28 +68,32 @@ func moveHead(r *linkedlist.Node[*Knot], d Dir) {
 }
 
 func updateKnot(k *linkedlist.Node[*Knot]) {
-	var movedX, movedY bool
+	var moved bool
 	dx := k.Prev().Value().Pos.X - k.Value().Pos.X
 	dy := k.Prev().Value().Pos.Y - k.Value().Pos.Y
+	adx := mathutil.Abs(dx)
+	ady := mathutil.Abs(dy)
 
-	if abs(dx) >= 2 {
-		k.Value().Pos.X += (dx / abs(dx))
-		if abs(dy) != 0 {
-			k.Value().Pos.Y += (dy / abs(dy))
+	if adx > 1 && ady > 1 {
+		k.Value().Pos.X += (dx / adx)
+		k.Value().Pos.Y += (dy / ady)
+		moved = true
+	} else if adx >= 2 {
+		k.Value().Pos.X += (dx / adx)
+		if ady != 0 {
+			k.Value().Pos.Y += (dy / ady)
 		}
-		movedX = true
-	}
-
-	if abs(dy) >= 2 {
-		k.Value().Pos.Y += (dy / abs(dy))
-		if abs(dx) != 0 {
-			k.Value().Pos.X += (dx / abs(dx))
+		moved = true
+	} else if ady >= 2 {
+		k.Value().Pos.Y += (dy / ady)
+		if adx != 0 {
+			k.Value().Pos.X += (dx / adx)
 		}
-		movedY = true
+		moved = true
 	}
 
 	// If we moved at all, remember the new position.
-	if movedX || movedY {
+	if moved {
 		k.Value().Visit()
 	}
 
@@ -98,13 +101,6 @@ func updateKnot(k *linkedlist.Node[*Knot]) {
 	if k.Next() != nil {
 		updateKnot(k.Next())
 	}
-}
-
-func abs(i int) int {
-	if i < 0 {
-		return -1 * i
-	}
-	return i
 }
 
 func (k *Knot) Visit() {
