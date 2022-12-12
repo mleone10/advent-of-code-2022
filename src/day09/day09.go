@@ -5,6 +5,8 @@ import (
 	"strings"
 
 	"github.com/mleone10/advent-of-code-2022/pkg/grid"
+	"github.com/mleone10/advent-of-code-2022/pkg/linkedlist"
+	"github.com/mleone10/advent-of-code-2022/pkg/maputil"
 )
 
 type Dir grid.Point
@@ -27,88 +29,91 @@ var Cmds = map[string]Dir{
 	"R": DirRight,
 }
 
-type Rope struct {
-	Head Knot
-	Tail Knot
-}
-
 type Knot struct {
 	Pos     grid.Point
-	visited []grid.Point
-	next    *Knot
-	prev    *Knot
+	visited map[grid.Point]bool
 }
 
-func NewRope(len int) Rope {
-	head := newKnot()
-	prev := &head
-	tail := &head
+func NewRope(len int) *linkedlist.Node[*Knot] {
+	head := linkedlist.NewNode(newKnot())
 	for i := 0; i < len-1; i++ {
-		next := newKnot()
-		prev.next = &next
-		next.prev = prev
-		tail = &next
-		prev = &next
+		head.Tail().LinkNext(linkedlist.NewNode(newKnot()))
 	}
-	return Rope{Head: head, Tail: *tail}
+	return head
 }
 
-func newKnot() Knot {
-	return Knot{visited: []grid.Point{{X: 0, Y: 0}}}
+func newKnot() *Knot {
+	return &Knot{visited: map[grid.Point]bool{{X: 0, Y: 0}: true}}
 }
 
-func (r Rope) Length() int {
-	return r.Head.length()
-}
-
-func (k Knot) length() int {
-	if k.next == nil {
-		return 1
-	}
-	return 1 + k.next.length()
-}
-
-func (r *Rope) SimulateMoves(moves []string) {
-	for _, m := range moves {
-		mParts := strings.Split(m, " ")
+func SimulateMoves(r *linkedlist.Node[*Knot], mvs []string) {
+	for _, mv := range mvs {
+		mParts := strings.Split(mv, " ")
 		dist, _ := strconv.Atoi(mParts[1])
-		r.MoveHead(Cmds[mParts[0]], dist)
+		MoveN(r, Cmds[mParts[0]], dist)
 	}
 }
 
-func (r *Rope) MoveHead(dir Dir, dist int) {
+func MoveN(r *linkedlist.Node[*Knot], d Dir, dist int) {
 	for i := 0; i < dist; i++ {
-		r.Head.step(grid.Point(dir))
+		moveHead(r, d)
 	}
 }
 
-func (k *Knot) step(next grid.Point) {
-	prevPos := k.Pos
-	// Move the current knot
-	k.Pos.X = next.X
-	k.Pos.Y = next.Y
+func moveHead(r *linkedlist.Node[*Knot], d Dir) {
+	r.Value().move(d)
 
-	// Determine where to move the next knot
-	if k.next != nil {
-		kDir := k.chooseNext(prevPos)
-		k.next.step(kDir)
+	if r.Next() != nil {
+		updateKnot(r.Next())
 	}
 }
 
-func (k Knot) chooseNext(prevPos grid.Point) grid.Point {
-	return prevPos
+func updateKnot(k *linkedlist.Node[*Knot]) {
+	// Update this knot's position based on its current position relative to the parenti
+	var movedX, movedY bool
+	dx := k.Prev().Value().Pos.X - k.Value().Pos.X
+	dy := k.Prev().Value().Pos.Y - k.Value().Pos.Y
+
+	if abs(dx) > 1 {
+		k.Value().Pos.X += dx - (dx / abs(dx))
+		if abs(dy) != 0 {
+			k.Value().Pos.Y += (dy / abs(dy))
+		}
+		movedX = true
+	}
+
+	if abs(dy) > 1 {
+		k.Value().Pos.Y += dy - (dy / abs(dy))
+		if abs(dx) != 0 {
+			k.Value().Pos.X += (dx / abs(dx))
+		}
+		movedY = true
+	}
+
+	// If we moved at all, remember the new position.
+	if movedX || movedY {
+		k.Value().visited[grid.Point{X: k.Value().Pos.X, Y: k.Value().Pos.Y}] = true
+	}
+
+	// If there's another knot, update it's position as well.
+	if k.Next() != nil {
+		updateKnot(k.Next())
+	}
 }
 
-// func (r *Rope) step(dir grid.Point) {
-// 	prevHead := r.Head
-// 	r.Head.X += dir.X
-// 	r.Head.Y += dir.Y
-// 	if !r.Head.Neighboring(r.Tail) {
-// 		r.Tail = prevHead
-// 		r.visited.Set(r.Tail.X, r.Tail.Y, true)
-// 	}
-// }
+func abs(i int) int {
+	if i < 0 {
+		return -1 * i
+	}
+	return i
+}
 
-func (r Rope) TailPositions() []grid.Point {
-	return r.Tail.visited
+func (k *Knot) move(d Dir) {
+	k.Pos.X += d.X
+	k.Pos.Y += d.Y
+	k.visited[grid.Point{X: k.Pos.X, Y: k.Pos.Y}] = true
+}
+
+func (k Knot) Visited() []grid.Point {
+	return maputil.Keys(k.visited)
 }
