@@ -1,5 +1,74 @@
 package day12
 
-type Day12 struct {
-  Input string
+import (
+	"strings"
+
+	"github.com/mleone10/advent-of-code-2022/pkg/array"
+	"github.com/mleone10/advent-of-code-2022/pkg/grid"
+)
+
+type Terrain struct {
+	grid.Plane[int]
+	Start, End grid.Point
+}
+
+func NewTerrain(input string) *Terrain {
+	t := Terrain{}
+
+	for y, row := range strings.Split(strings.TrimSpace(input), "\n") {
+		for x, h := range row {
+			if h == 'S' {
+				t.Start = grid.Point{X: x, Y: y}
+				t.Set(x, y, heightOf('a'))
+			} else if h == 'E' {
+				t.End = grid.Point{X: x, Y: y}
+				t.Set(x, y, heightOf('z'))
+			} else {
+				t.Set(x, y, int(h)-97)
+			}
+		}
+	}
+
+	return &t
+}
+
+func heightOf(r rune) int {
+	return int(r) - 97
+}
+
+func (t Terrain) DistanceToEnd() int {
+	neighbors := []grid.Point{t.Start}
+	visited := []grid.Point{}
+	distanceFromStart := map[grid.Point]int{t.Start: 0}
+
+	for len(neighbors) != 0 {
+		p := neighbors[0]
+		neighbors = neighbors[1:]
+
+		visited = append(visited, p)
+
+		for _, neighbor := range t.ValidNeighbors(p, visited) {
+			distanceFromStart[neighbor] = distanceFromStart[p] + 1
+			neighbors = append(neighbors, neighbor)
+		}
+	}
+
+	return distanceFromStart[t.End]
+}
+
+func (t Terrain) ValidNeighbors(p grid.Point, path []grid.Point) []grid.Point {
+	var neighbors []grid.Point
+
+	for _, delta := range []grid.Point{{X: 0, Y: -1}, {X: 0, Y: 1}, {X: -1, Y: 0}, {X: 1, Y: 0}} {
+		candidate := grid.Point{X: p.X + delta.X, Y: p.Y + delta.Y}
+		if t.Has(candidate.X, candidate.Y) && !array.Contains(path, candidate) {
+			candidateHeight := t.Get(candidate.X, candidate.Y)
+			currentHeight := t.Get(p.X, p.Y)
+			if candidateHeight <= currentHeight+1 {
+				neighbors = append(neighbors, candidate)
+			}
+		}
+	}
+
+	return neighbors
 }
