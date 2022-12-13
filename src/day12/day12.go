@@ -5,11 +5,13 @@ import (
 
 	"github.com/mleone10/advent-of-code-2022/pkg/array"
 	"github.com/mleone10/advent-of-code-2022/pkg/grid"
+	"github.com/mleone10/advent-of-code-2022/pkg/queue"
 )
 
 type Terrain struct {
 	grid.Plane[int]
-	Start, End grid.Point
+	Start, End  grid.Point
+	distanceMap grid.Plane[int]
 }
 
 func NewTerrain(input string) *Terrain {
@@ -29,6 +31,8 @@ func NewTerrain(input string) *Terrain {
 		}
 	}
 
+	t.populateDistanceMap()
+
 	return &t
 }
 
@@ -36,24 +40,17 @@ func heightOf(r rune) int {
 	return int(r) - 97
 }
 
-func (t Terrain) DistanceToEnd() int {
-	neighbors := []grid.Point{t.Start}
-	visited := []grid.Point{}
-	distanceFromStart := map[grid.Point]int{t.Start: 0}
+func (t Terrain) populateDistanceMap() {
+	// TODO: implement breadth-first search to construct map of every point's shortest distance from t.Start.
+	var q queue.Queue[grid.Point]
+	distanceMap := grid.Plane[int]{}
+	distanceMap.Set(t.Start.X, t.Start.Y, 0)
+	q.Push(t.Start)
 
-	for len(neighbors) != 0 {
-		p := neighbors[0]
-		neighbors = neighbors[1:]
+	for q.Length() != 0 {
 
-		visited = append(visited, p)
-
-		for _, neighbor := range t.ValidNeighbors(p, visited) {
-			distanceFromStart[neighbor] = distanceFromStart[p] + 1
-			neighbors = append(neighbors, neighbor)
-		}
 	}
 
-	return distanceFromStart[t.End]
 }
 
 func (t Terrain) ValidNeighbors(p grid.Point, path []grid.Point) []grid.Point {
@@ -71,4 +68,8 @@ func (t Terrain) ValidNeighbors(p grid.Point, path []grid.Point) []grid.Point {
 	}
 
 	return neighbors
+}
+
+func (t Terrain) DistanceToEnd() int {
+	return t.distanceMap.Get(t.End.X, t.End.Y)
 }
