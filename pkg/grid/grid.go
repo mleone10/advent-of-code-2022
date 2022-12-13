@@ -5,8 +5,6 @@ import (
 	"github.com/mleone10/advent-of-code-2022/pkg/maputil"
 )
 
-// TODO: implement types/methods for handling 2D and 3D grids, including creating, loading, traversing, measuring, and printing
-
 type item interface {
 	any
 }
@@ -29,6 +27,15 @@ func (p *Plane[T]) Set(x, y int, item T) {
 
 func (p Plane[T]) Get(x, y int) T {
 	return p.grid[y][x]
+}
+
+func (p Plane[T]) Has(x, y int) bool {
+	if row, rowExists := p.grid[y]; rowExists {
+		if _, colExists := row[x]; colExists {
+			return true
+		}
+	}
+	return false
 }
 
 func (p Plane[T]) All() [][]T {

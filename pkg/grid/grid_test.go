@@ -15,6 +15,13 @@ func TestSetGet(t *testing.T) {
 	assert.Equal(t, g.Get(100, 100), 1)
 }
 
+func TestHas(t *testing.T) {
+	var g grid.Plane[int]
+	assert.Equal(t, g.Has(0, 0), false)
+	g.Set(0, 0, 1)
+	assert.Equal(t, g.Has(0, 0), true)
+}
+
 func TestWidth(t *testing.T) {
 	var g grid.Plane[int]
 	g.Set(0, 0, 1)
